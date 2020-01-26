@@ -70,7 +70,9 @@ class _ScannerComponentState extends State<ScannerComponent> {
                     style: TextStyle(
                         fontFamily: 'Lato', color: Colors.white, fontSize: 18)),
                 duration: Duration(milliseconds: 500)));
+                
         }
+      
       }
     });
   }

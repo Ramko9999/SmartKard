@@ -9,6 +9,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 
 class WaitComponent extends StatelessWidget {
   Widget build(BuildContext context) {
+    print("${Global.userDataFile.readAsStringSync()}");
     final dtBloc = BlocProvider.of<DataTransferBloc>(context);
     double sW = MediaQuery.of(context).size.width;
     double sH = MediaQuery.of(context).size.height;
@@ -25,7 +26,7 @@ class WaitComponent extends StatelessWidget {
               height: sW * 0.7,
               child: QrImage(
                 foregroundColor: ColorSchemeUI.glowingRed,
-                data: json.encode(Global.userDataFile.readAsStringSync()),
+                data: "${Global.userDataFile.readAsStringSync()}",
               ),
             ),
           ),
