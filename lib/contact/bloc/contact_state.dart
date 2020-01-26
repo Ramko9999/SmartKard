@@ -6,7 +6,7 @@ abstract class ContactState {}
 class SearchState extends ContactState {}
 
 class ViewerState extends ContactState {
-  String data;
+  Map data;
   ViewerState(this.data): super();
 }
 

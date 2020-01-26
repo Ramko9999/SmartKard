@@ -19,5 +19,8 @@ class DataTransferBloc extends Bloc<DataTransferEvent, DataTransferState> {
     else if(event is ContactEvent){
       yield ContactState();
     }
+    else if(event is ProfileEvent){
+      yield ProfileState();
+    }
   }
 }

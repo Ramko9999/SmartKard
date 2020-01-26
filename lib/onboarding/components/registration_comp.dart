@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:minne_hack/data-transfer/connection_page.dart';
 import 'package:minne_hack/onboarding/functions.dart';
+import 'package:minne_hack/utility/color_scheme.dart';
 import 'package:minne_hack/utility/transition.dart';
 
 class RegistrationForm extends StatefulWidget{
@@ -134,11 +135,11 @@ class _RegistrationFormState extends State<RegistrationForm> {
                           child: Align(
                             alignment: Alignment(0.7, 0),
                             child: RaisedButton(
-                              color: Colors.black,
+                              color: ColorSchemeUI.glowingRed,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(17)
                               ),
-                              child: Text("TAG IT", style: TextStyle(
+                              child: Text("GO", style: TextStyle(
                                 color: Colors.white,
                                 fontFamily: "Montserrat",
                                 fontSize: 16

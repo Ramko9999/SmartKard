@@ -57,7 +57,9 @@ class WaitComponent extends StatelessWidget {
                               Icons.person_outline,
                               color: Colors.white,
                             )),
-                        onTap: () {},
+                        onTap: () {
+                          dtBloc.add(ProfileEvent());
+                        },
                       ),
                     ),
                   ),

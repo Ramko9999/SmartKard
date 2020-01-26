@@ -13,7 +13,7 @@ class LocalCache {
     Map fileData = {
         "firstName": names[0],
         "lastName": names[1],
-        "mail": email,
+        "email": email,
     };
 
     Directory appDirec = await getApplicationDocumentsDirectory();

@@ -147,7 +147,7 @@ class SocialMediaBar extends StatelessWidget{
     double sW = MediaQuery.of(context).size.width;
     return Row(children: <Widget>[
       Container(
-        width: sW * 0.6,
+        width: sW * 0.48,
       ),
         Container(
         width: sW * 0.12,
@@ -156,7 +156,12 @@ class SocialMediaBar extends StatelessWidget{
       Container(
         width: sW * 0.12,
         height: sW * 0.12,
-      child: Image.asset("images/instagram_1.png"))
+      child: Image.asset("images/instagram_1.png")),
+      Container(
+        width: sW * 0.12,
+        height: sW * 0.12,
+        child: Image.asset("images/github.png")
+      )
     ],);
   }
 }

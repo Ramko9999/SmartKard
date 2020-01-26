@@ -23,6 +23,7 @@ class ContactBloc extends Bloc<ContactEvent, ContactState> {
     else if(event is ViewerEvent){
       yield LoadingState();
       Map data = json.decode(await Global.contactFile.readAsString());
+      print(data);
       yield ViewerState(data[event.name]);
     }
   }

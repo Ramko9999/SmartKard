@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:minne_hack/contact/bloc/bloc.dart';
+import 'package:minne_hack/contact/components/profile_component.dart';
 import 'package:minne_hack/data-transfer/connection_page.dart';
 
 import 'bloc/contact_bloc.dart';
@@ -39,7 +40,7 @@ class ContactPageComponent extends StatelessWidget{
             return SearchComponent();
           }
           else if(state is ViewerState){
-            
+            return ProfileComponent(state.data);
           }
         },
       ),

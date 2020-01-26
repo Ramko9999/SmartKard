@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:minne_hack/contact/contact_page.dart';
 import 'package:minne_hack/contact/functions.dart';
 import 'package:minne_hack/data-transfer/components/transfer_comp.dart';
+import 'package:minne_hack/data/data_page.dart';
 import 'package:minne_hack/utility/global.dart';
 import 'package:minne_hack/utility/global.dart';
 import 'package:minne_hack/utility/transition.dart';
@@ -30,8 +31,9 @@ class ConnectionPageComponent extends StatelessWidget{
       bloc: BlocProvider.of<DataTransferBloc>(context),
       listener: (BuildContext context, DataTransferState state){
         if(state is ProfileState){
+          Navigator.of(context).pop();
           return Navigator.of(context).push(NoTransition(
-            builder: (context)=> null
+            builder: (context)=> DataPage()
           ));
         }
         else if(state is ContactState){
