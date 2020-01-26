@@ -29,8 +29,9 @@ dependencies:
   flutter_nfc_reader:
   material_design_icons_flutter:
   qr_flutter:
-  r_scan:
   permission_handler:
+  camera:
+  firebase_ml_vision:
 
 dev_dependencies:
   flutter_test:

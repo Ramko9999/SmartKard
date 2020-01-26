@@ -33,6 +33,7 @@ class WaitComponent extends StatelessWidget {
           ),
         ),
         Container(
+          color: Colors.white,
           height: sH * 0.3,
           width: sW,
           child: Row(
@@ -88,6 +89,7 @@ class WaitComponent extends StatelessWidget {
                 width: sW * 0.15,
               ),
               Container(
+                color: Colors.white,
                 width: sW * 0.15,
                 child: Container(
                   height: sH * 0.3,

@@ -49,7 +49,7 @@ class ConnectionPageComponent extends StatelessWidget{
             return WaitComponent();
           }
           else if(state is ScanState){
-            return ScanComponent();
+            return ScannerComponent();
           }
         },
       ),

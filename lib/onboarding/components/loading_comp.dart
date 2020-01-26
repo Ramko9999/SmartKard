@@ -20,16 +20,6 @@ class _LoadingComponentState extends State<LoadingComponent> {
     });  
   }
 
-  void checkFile() async {
-   bool result = await LocalCache.loadContactFile();
-   if(!result){
-     print("Result is false");
-     BlocProvider.of<OnboardingBloc>(context).add(CreateEvent());
-   }
-   else{
-
-   }
-  }
   
   Widget build(BuildContext context){
     return Container(

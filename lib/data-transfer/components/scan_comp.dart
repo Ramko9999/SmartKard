@@ -1,85 +1,253 @@
+import 'dart:async';
+import 'dart:io';
+
+import 'package:camera/camera.dart';
+import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import "package:flutter/material.dart";
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:minne_hack/data-transfer/bloc/bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
-import "package:r_scan/r_scan.dart";
 
-class ScanComponent extends StatefulWidget{
-
-
-  @override
-  _ScanComponentState createState() => _ScanComponentState();
+class ScannerComponent extends StatefulWidget {
+  State<ScannerComponent> createState() {
+    return _ScannerComponentState();
+  }
 }
 
-class _ScanComponentState extends State<ScanComponent> {
+class _ScannerComponentState extends State<ScannerComponent> {
+  CameraController _mainCamera; //camera that will give us the feed
   bool _isCameraInitalized = false;
   bool _cameraPermission = true;
-  RScanController _controller;
+  final _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final _processor = StreamController();
+  String name = "";
 
-  void initState(){
-    super.initState();
-    initControllers();
-  }
+  //handles running the actual scanner camera stream
+  void runStream() {
+    _mainCamera.startImageStream((image) async {
+      FirebaseVisionImageMetadata metadata;
 
-  void dispose(){
-    _controller.dispose();
-    super.dispose();
-  }
+      //metadata tag for the for image format.
+      //source https://github.com/flutter/flutter/issues/26348
+      metadata = FirebaseVisionImageMetadata(
+          rawFormat: image.format.raw,
+          size: Size(image.width.toDouble(), image.height.toDouble()),
+          planeData: image.planes
+              .map((plane) => FirebaseVisionImagePlaneMetadata(
+                  bytesPerRow: plane.bytesPerRow,
+                  height: plane.height,
+                  width: plane.width))
+              .toList());
 
-  void initControllers(){
-    _controller = RScanController();
-    _controller.addListener((){
-      final result = _controller.result;
-      if(result != null){
-        print(result.message);
+      FirebaseVisionImage visionImage =
+          FirebaseVisionImage.fromBytes(image.planes[0].bytes, metadata);
+
+      List<Barcode> barcodes = await FirebaseVision.instance
+          .barcodeDetector()
+          .detectInImage(visionImage);
+
+      for (Barcode barcode in barcodes) {
+        print(barcode);
       }
     });
   }
 
   //get a list of permissions that are still denied
-  Future<bool> getPermissionsThatNeedToBeChecked(
+  Future<List> getPermissionsThatNeedToBeChecked(
       PermissionGroup cameraPermission,
       PermissionGroup microphonePermission) async {
-
-        print("getPermissions");
     PermissionStatus cameraPermStatus =
         await PermissionHandler().checkPermissionStatus(cameraPermission);
+    PermissionStatus microphonePermStatus =
+        await PermissionHandler().checkPermissionStatus(microphonePermission);
+
+    List<PermissionGroup> stillNeedToBeGranted = [];
+
     if (cameraPermStatus == PermissionStatus.denied) {
-      return false;
+      stillNeedToBeGranted.add(cameraPermission);
     }
 
-    return true;
+    if (microphonePermStatus == PermissionStatus.denied) {
+      stillNeedToBeGranted.add(microphonePermission);
+    }
+
+    return stillNeedToBeGranted;
   }
 
+  //create camera based on permissions
+  void createCamera() async {
+    List<PermissionGroup> permList = await getPermissionsThatNeedToBeChecked(
+        PermissionGroup.camera, PermissionGroup.microphone);
 
+    if (permList.length == 0) {
+      //get all the avaliable cameras
+      availableCameras().then((allCameras) {
+        _mainCamera = CameraController(allCameras[0], ResolutionPreset.low);
 
-  Widget build(BuildContext context){
-    
+        _mainCamera.initialize().then((_) {
+          if (!mounted) {
+            return;
+          }
+          setState(() {
+            _isCameraInitalized = true;
+          }); //show the actual camera
+
+          runStream();
+
+          _processor.stream.listen((onData) async {
+            String firstName = onData["firstName"];
+            String lastName = onData["lastName"];
+            //show scaffold here
+            _scaffoldKey.currentState.showSnackBar(SnackBar(
+                backgroundColor: Color.fromRGBO(46, 204, 113, 1),
+                content: Text("${firstName} ${lastName}",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontFamily: 'Lato', color: Colors.white, fontSize: 18)),
+                duration: Duration(milliseconds: 500)));
+          });
+        }).catchError((onError) {
+          //permission denied
+          if (onError.toString().contains("permission not granted")) {
+            setState(() {
+              _cameraPermission = false;
+            });
+          }
+        });
+      });
+    } else {
+      setState(() {
+        _cameraPermission = false;
+      });
+    }
+  }
+
+  //request permissions and check until all are requestsed
+  void requestPermStatus(List<PermissionGroup> permissionGroups) {
+    bool allAreAccepted = true;
+    PermissionHandler()
+        .requestPermissions(permissionGroups)
+        .then((permissionResult) {
+      permissionResult.forEach((k, v) {
+        if (v == PermissionStatus.denied) {
+          allAreAccepted = false;
+        }
+      });
+      if (allAreAccepted) {
+        setState(() {
+          _cameraPermission = true;
+        });
+        createCamera();
+      }
+    });
+  }
+
+  void initState() {
+    super.initState();
+    createCamera();
+  }
+
+  void dispose() {
+    if (_mainCamera != null) {
+      _mainCamera.dispose();
+    }
+
+    super.dispose();
+  }
+
+  Widget build(BuildContext context) {
+    final dtBloc = BlocProvider.of<DataTransferBloc>(context);
+    //check first whether camera is init
+    if (_isCameraInitalized) {
+      //check whether camera is already is streaming images
+      if (!_mainCamera.value.isStreamingImages) {
+        runStream();
+      }
+    }
+
+    double screenHeight = MediaQuery.of(context).size.height;
+    double screenWidth = MediaQuery.of(context).size.width;
+
     return Container(
-      child: FutureBuilder(
-        future: getPermissionsThatNeedToBeChecked(PermissionGroup.camera, PermissionGroup.microphone),
-        builder: (BuildContext context, var snapshot){
-          if(snapshot.hasData){
-            if(snapshot.data){
-            return RScanView(
-              controller: _controller 
-            );
-          }
-          else{
-            return Container(
-              color: Colors.white,
-              child: Center(child: Text("Camera permissions denied, click here to request")),
-            );
-          }
-          }
-          else{
-            return Container(
-              color: Colors.white,
-              child: Center(child: Text("Loading...")),
-            );
-          }
-          
-        },
+      height: screenHeight,
+      width: screenWidth,
+      child: Column(
+        children: <Widget>[
+          Container(
+            height: screenHeight * 0.2,
+            child: Container(
+              child: Align(
+                alignment: Alignment(-0.9, 0),
+                child: InkWell(
+                    child: Container(
+                      child: Image.asset("images/Cross.png"),
+                    ),
+                    onTap: () {
+                      dtBloc.add(WaitEvent());
+                    }),
+              ),
+            ),
+          ),
+          Container(
+            height: screenHeight * 0.2,
+            child: Container(
+              height: screenHeight * 0.4,
+              child: Align(
+                alignment: Alignment(0, -0.2),
+                child: Text(
+                  "Scan the QR Code",
+                  style: TextStyle(fontFamily: "Montserrat", fontSize: 24),
+                ),
+              ),
+            ),
+          ),
+          Container(
+            height: screenHeight * 0.35,
+            width: screenWidth * 0.8,
+            child: Center(
+              child: Container(
+                child: _cameraPermission
+                    ? _isCameraInitalized
+                        ? Platform.isIOS
+                            ? RotationTransition(
+                                child: CameraPreview(_mainCamera),
+                                turns: AlwaysStoppedAnimation(270 / 360))
+                            : Container(
+                                height: screenHeight * 0.35,
+                                child: Align(
+                                    alignment: Alignment(0, -1),
+                                    child: CameraPreview(_mainCamera)))
+                        : Container(
+                            child: Center(
+                                child: Text(
+                              "Loading",
+                              style: TextStyle(
+                                fontFamily: "Montserrat",
+                                fontSize: 24,
+                              ),
+                            )),
+                          )
+                    : GestureDetector(
+                        onTap: () {
+                          getPermissionsThatNeedToBeChecked(
+                                  PermissionGroup.camera,
+                                  PermissionGroup.microphone)
+                              .then((permGroupList) {
+                            requestPermStatus(permGroupList);
+                          });
+                        },
+                        child: Container(
+                          child: Text(Platform.isAndroid
+                              ? "You have denied camera permissions, please accept them by clicking on this text"
+                              : "You have denied camera permissions, please go to settings to activate them"),
+                        )),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
-}
 
+  static StreamController() {}
+}
