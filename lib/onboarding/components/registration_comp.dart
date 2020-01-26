@@ -1,8 +1,8 @@
 
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:minne_hack/onboarding/bloc/bloc.dart';
+import 'package:minne_hack/data-transfer/connection_page.dart';
+import 'package:minne_hack/onboarding/functions.dart';
 
 class RegistrationForm extends StatefulWidget{
   @override
@@ -28,11 +28,17 @@ class _RegistrationFormState extends State<RegistrationForm> {
   }
 
 
+  void _submit() async {
+    LocalCache.initUser(_nameController.text, _emailController.text).then((_){
+      Navigator.of(context).push(MaterialPageRoute(builder: (context)=> ConnectionPage()));
+    });
+  }
+
+
   Widget build(BuildContext context) {
     TextStyle textStyle = Theme.of(context).textTheme.title;
     double sW = MediaQuery.of(context).size.width;
     double sH = MediaQuery.of(context).size.height;
-    final onboardingBloc = BlocProvider.of<OnboardingBloc>(context);
 
     return Container(
         width: sW,
@@ -136,9 +142,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
                                 fontFamily: "Montserrat",
                                 fontSize: 16
                               )),
-                              onPressed: (){
-                                onboardingBloc.add(FinishCreateEvent(_nameController.text, _emailController.text));
-                              }
+                              onPressed: ()=> _submit()
                             ),
                           ),
                         ),

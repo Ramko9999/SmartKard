@@ -14,10 +14,7 @@ class LoadingComponent extends StatefulWidget{
 class _LoadingComponentState extends State<LoadingComponent> {
 
   void initState(){
-    super.initState();
-    Future.delayed(Duration.zero, (){
-      checkFile();
-    });  
+    super.initState();  
   }
 
   

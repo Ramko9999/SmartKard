@@ -14,6 +14,7 @@ class WaitComponent extends StatelessWidget {
     return Column(
       children: <Widget>[
         Container(
+         
           height: sH * 0.7,
           width: sW,
           color: Colors.white,
@@ -42,17 +43,23 @@ class WaitComponent extends StatelessWidget {
                 width: sW * 0.1,
               ),
               Container(
+                
                 width: sW * 0.15,
                 height: sH * 0.3,
                 child: Align(
-                    alignment: Alignment(0, 0.5),
-                    child: ClipOval(
+                  alignment: Alignment(0, 0.5),
+                  child: ClipOval(
                     child: Material(
                       color: ColorSchemeUI.glowingRed, // button color
                       child: InkWell(
                         splashColor: Colors.red, // inkwell color
                         child: SizedBox(
-                            width: 56, height: 56, child: Icon(Icons.person_outline, color: Colors.white,)),
+                            width: 56,
+                            height: 56,
+                            child: Icon(
+                              Icons.person_outline,
+                              color: Colors.white,
+                            )),
                         onTap: () {},
                       ),
                     ),
@@ -69,21 +76,25 @@ class WaitComponent extends StatelessWidget {
                   child: Align(
                     alignment: Alignment(0, -0.5),
                     child: Container(
-                        width: sW * 0.3,
-                        height: sH* 0.3,
-                        child: InkWell(
-                          splashColor: Colors.red, 
-        // inkwell color
-                          child: Container(
-                            child: Image.asset("images/sharingan.png", scale: 2,),
+                  
+                      width: sW * 0.3,
+                      height: sH * 0.3,
+                      child: InkWell(
+                        splashColor: Colors.red,
+                        // inkwell color
+                        child: Container(
+                          child: Image.asset(
+                            "images/sharingan.png",
+                            scale: 2,
                           ),
-                          onTap: () {
-                            dtBloc.add(ScanEvent());
-                          },
                         ),
+                        onTap: () {
+                          dtBloc.add(ScanEvent());
+                        },
                       ),
                     ),
                   ),
+                ),
               ),
               Container(
                 width: sW * 0.15,
@@ -101,7 +112,12 @@ class WaitComponent extends StatelessWidget {
                         child: InkWell(
                           splashColor: Colors.red, // inkwell color
                           child: SizedBox(
-                              width: 56, height: 56, child: Icon(Icons.people, color: Colors.white,)),
+                              width: 56,
+                              height: 56,
+                              child: Icon(
+                                Icons.people,
+                                color: Colors.white,
+                              )),
                           onTap: () {
                             dtBloc.add(ContactEvent());
                           },

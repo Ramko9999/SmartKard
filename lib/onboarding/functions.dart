@@ -11,38 +11,38 @@ class LocalCache {
     
     List<String> names = name.split(" ");
     Map fileData = {
-      "user": {
         "firstName": names[0],
         "lastName": names[1],
         "mail": email,
-      },
-      "contact": {}
     };
 
-    Global.contactFile.writeAsStringSync(json.encode(fileData));
+    Directory appDirec = await getApplicationDocumentsDirectory();
+    File contactInfo = File(appDirec.path + "/contacts.json");
+    Global.userDataFile.writeAsStringSync(json.encode(fileData));
+
+    Global.contactFile = contactInfo;
+    Global.contactFile.writeAsStringSync(json.encode({}));
   }
 
   //return true or false based on whether the data is there or not
   static Future<bool> loadContactFile() async {
-    print("Trying to load...");
     Directory appDirec = await getApplicationDocumentsDirectory();
-    File dataFile = File(appDirec.path + "/data.json");
+    File dataFile = File(appDirec.path + "/user.json");
     if (!dataFile.existsSync()) {
       dataFile.createSync();
     }
-
-    Global.contactFile = dataFile;
+    Global.userDataFile = dataFile;
     String encContents = dataFile.readAsStringSync();
-    print("Contacts:" + encContents);
     if (encContents.length == 0) {
-      Global.contactFile.writeAsStringSync(json.encode({}));
+      Global.userDataFile.writeAsStringSync(json.encode({}));
       return false;
     }
     Map data = json.decode(encContents);
     if (data.keys.length == 0) {
       return false;
     }
-
+    
+    Global.contactFile = File(appDirec.path + "/contacts.json");
     return true;
   }
 }
