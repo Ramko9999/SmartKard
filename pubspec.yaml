@@ -28,6 +28,9 @@ dependencies:
   nfc_in_flutter: ^2.0.3
   flutter_nfc_reader:
   material_design_icons_flutter:
+  qr_flutter:
+  r_scan:
+  permission_handler:
 
 dev_dependencies:
   flutter_test:

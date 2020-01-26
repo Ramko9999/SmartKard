@@ -10,6 +10,7 @@ class ContactPage extends StatelessWidget{
 
   Widget build(BuildContext context){
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: BlocProvider(
         child: ContactPageComponent(),
         builder: (context) => ContactBloc()
@@ -30,8 +31,6 @@ class ContactPageComponent extends StatelessWidget{
             builder: (context) => ConnectionPage()
           ));
         }
-
-        return Container();
       },
       child: BlocBuilder(
         bloc: BlocProvider.of<ContactBloc>(context),

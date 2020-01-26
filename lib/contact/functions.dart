@@ -3,12 +3,13 @@ import 'dart:collection';
 class Trie{
   
   _Node root;
-
+  List<String> names;
   Trie(){
     root = _Node('');
   }
 
   void fillTrie(words){
+    this.names = words;
     for(int i = 0; i < words.length; i++){
       String word = words[i];
       _Node current = this.root;
@@ -26,15 +27,15 @@ class Trie{
   }
 
   List<String> getResults(query){
-    
+
+    query = query.toString().trim();
     //run down the Trie
     _Node current = this.root;
     for(int i = 0; i < query.length; i++){
-        _Node temp = current.chars[query[i]];
-        if(temp == null){
-          break;
+        current = current.chars[query[i]];
+        if(current == null){
+          return [];
         }
-        current = temp;
     }
 
     List<String> results = [];
@@ -55,6 +56,9 @@ class Trie{
       });
     }
   
+  for(int i = 0; i < results.length; i++){
+    results[i] = query + results[i];
+  }
   return results;
   }
 }
@@ -71,17 +75,16 @@ class _Node{
     if(isEnd != null){
       this.isEnd = isEnd;
     }
+    this.chars = {};
 
-    for(int i = 0; i < 10; i++){
-      this.chars[i.toString()] = null;
-    }
     for(int i = 65; i < 91; i++){
       String char = String.fromCharCode(i);
       this.chars[char] = null;
       this.chars[char.toUpperCase()] = null;
     }
 
-    this.chars['@'] = null;
-    this.chars['.'] = null;
+
+
+    this.chars[' '] = null;
   }
 }

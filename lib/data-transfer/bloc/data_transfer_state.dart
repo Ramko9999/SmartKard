@@ -4,9 +4,6 @@ import 'package:meta/meta.dart';
 abstract class DataTransferState {}
   
 class WaitState extends DataTransferState {}
-
-class TransferState extends DataTransferState {}
-
+class ScanState extends DataTransferState {}
 class ProfileState extends DataTransferState {}
-
 class ContactState extends DataTransferState {}

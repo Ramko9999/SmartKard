@@ -13,8 +13,8 @@ class DataTransferBloc extends Bloc<DataTransferEvent, DataTransferState> {
     if(event is WaitEvent){
       yield WaitState();
     }
-    else if(event is TransferEvent){
-      yield TransferState();
+    else if(event is ScanEvent){
+      yield ScanState();
     }
     else if(event is ContactEvent){
       yield ContactState();

@@ -1,9 +1,13 @@
 import "package:flutter/material.dart";
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:minne_hack/contact/contact_page.dart';
+import 'package:minne_hack/contact/functions.dart';
 import 'package:minne_hack/data-transfer/components/transfer_comp.dart';
+import 'package:minne_hack/utility/global.dart';
+import 'package:minne_hack/utility/global.dart';
 import 'bloc/data_transfer_bloc.dart';
 import 'bloc/data_transfer_state.dart';
+import 'components/scan_comp.dart';
 import 'components/wait_comp.dart';
 
 class ConnectionPage extends StatelessWidget{
@@ -30,7 +34,6 @@ class ConnectionPageComponent extends StatelessWidget{
           ));
         }
         else if(state is ContactState){
-
           Navigator.of(context).pop();
           return Navigator.of(context).push(MaterialPageRoute(
             builder: (context)=> ContactPage()
@@ -45,8 +48,8 @@ class ConnectionPageComponent extends StatelessWidget{
           if(state is WaitState){
             return WaitComponent();
           }
-          else if(state is TransferState){
-            return TransferComponent();
+          else if(state is ScanState){
+            return ScanComponent();
           }
         },
       ),

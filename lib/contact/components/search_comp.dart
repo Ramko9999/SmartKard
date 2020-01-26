@@ -3,6 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:minne_hack/contact/bloc/bloc.dart';
 import "package:material_design_icons_flutter/material_design_icons_flutter.dart";
 import 'package:minne_hack/utility/color_scheme.dart';
+import 'package:minne_hack/utility/global.dart';
+
+import '../functions.dart';
 
 class SearchComponent extends StatefulWidget {
   @override
@@ -11,10 +14,31 @@ class SearchComponent extends StatefulWidget {
 
 class _SearchComponentState extends State<SearchComponent> {
   TextEditingController _queryController;
+  String _query = "";
 
   void initState() {
     super.initState();
+
+    Global.contactInfo = Trie();
+    Global.contactInfo.fillTrie([
+      "Ramki Pitchala",
+      "Aswi Rmako",
+      "Naruto Uzumaki",
+      "Nagato Uzumaki",
+      "Nimato Uzumaki",
+      "Nagito Uzumaki",
+      "Neiato Uzumaki",
+      "Naiato Uzumaki",
+      "Nagieto Uzumaki",
+      "Sasuke Uzumaki",
+      "Shinra Tensei",
+      "Shere Tensei",
+    ]);
+    
     _queryController = TextEditingController();
+    _queryController.addListener((){
+      setState(()=> _query = _queryController.text);
+    });
   }
 
   void dispose() {
@@ -61,7 +85,7 @@ class _SearchComponentState extends State<SearchComponent> {
 
           Container(
             height: sH * 0.8,
-            child: SearchResults(),
+            child: SearchResults(_queryController.text),
           )
         ],
       ),
@@ -71,25 +95,23 @@ class _SearchComponentState extends State<SearchComponent> {
 
 
 class SearchResults extends StatelessWidget{
+  String _query;
+
+  SearchResults(this._query);
 
   Widget build(BuildContext context){
     
     double sW = MediaQuery.of(context).size.width;
     double sH = MediaQuery.of(context).size.height;
 
-    List<Map> items = [
-      {"firstName": "Ramki", "lastName": "Pitchala"},
-      {"firstName": "Rai", "lastName": "Pitala"},
-      {"firstName": "Ashwin", "lastName": "Murali"}
-    ];
-
-
+    List<String> items = getResults(this._query);
     return ListView.builder(
       itemCount: items.length,
       itemBuilder: (BuildContext context, int i){
         return Padding(
           padding: const EdgeInsets.only(top: 10),
           child: Container(
+            width: sW * 0.6,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(18),
               color: ColorSchemeUI.glowingRed,
@@ -101,7 +123,7 @@ class SearchResults extends StatelessWidget{
                 )),
               title: Align(
                   alignment: Alignment(-0.6,-0.2),
-                  child: Text("${items[i]["firstName"]} ${items[i]["lastName"]}",
+                  child: Text("${items[i]}",
                   style: TextStyle(
                     color: Colors.white,
                     fontFamily: "Montserrat",
@@ -113,6 +135,11 @@ class SearchResults extends StatelessWidget{
         );
       },
     );
+  }
+
+
+  List<String> getResults(String query){
+    return Global.contactInfo.getResults(query);
   }
 }
 
