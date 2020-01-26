@@ -4,6 +4,7 @@ import "package:flutter/material.dart";
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:minne_hack/data-transfer/bloc/bloc.dart';
 import 'package:minne_hack/utility/color_scheme.dart';
+import 'package:minne_hack/utility/global.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 class WaitComponent extends StatelessWidget {
@@ -24,11 +25,7 @@ class WaitComponent extends StatelessWidget {
               height: sW * 0.7,
               child: QrImage(
                 foregroundColor: ColorSchemeUI.glowingRed,
-                data: json.encode({
-                  "firstName": "Ramki",
-                  "lastName": "Pitchala",
-                  "email": "ramapitchala@gmail.com"
-                }),
+                data: json.encode(Global.userDataFile.readAsStringSync()),
               ),
             ),
           ),

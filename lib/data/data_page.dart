@@ -24,7 +24,7 @@ class _DataEditingWidgetState extends State<DataEditingWidget> {
 
 
   void loadData() async {
-    Future<String> encodedData = Global.contactFile.readAsString();
+    Future<String> encodedData = Global.userDataFile.readAsString();
     Map data = json.decode(await encodedData);
     setState(()=> widget._data = data);
   }

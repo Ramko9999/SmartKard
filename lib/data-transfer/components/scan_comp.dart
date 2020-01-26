@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:camera/camera.dart';
@@ -6,6 +7,7 @@ import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:minne_hack/data-transfer/bloc/bloc.dart';
+import 'package:minne_hack/utility/global.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class ScannerComponent extends StatefulWidget {
@@ -20,7 +22,7 @@ class _ScannerComponentState extends State<ScannerComponent> {
   bool _cameraPermission = true;
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
   final _processor = StreamController();
-  String name = "";
+  String prevName = "";
 
   //handles running the actual scanner camera stream
   void runStream() {
@@ -47,7 +49,28 @@ class _ScannerComponentState extends State<ScannerComponent> {
           .detectInImage(visionImage);
 
       for (Barcode barcode in barcodes) {
-        print(barcode);
+        Map data = json.decode(barcode.rawValue);
+        String name = data["firstName"] + data["lastName"];
+        if(name != prevName){
+          prevName = name;
+          String firstName = data["firstName"];
+          String lastName = data["lastName"];
+
+            Map contacts = json.decode(await Global.contactFile.readAsString());
+            
+            contacts["$firstName $lastName"] = data;
+
+            Global.contactFile.writeAsStringSync(json.encode(contacts));
+
+            //show scaffold here
+            Scaffold.of(context).showSnackBar(SnackBar(
+                backgroundColor: Color.fromRGBO(46, 204, 113, 1),
+                content: Text("${firstName} ${lastName}",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontFamily: 'Lato', color: Colors.white, fontSize: 18)),
+                duration: Duration(milliseconds: 500)));
+        }
       }
     });
   }
@@ -93,29 +116,11 @@ class _ScannerComponentState extends State<ScannerComponent> {
           }); //show the actual camera
 
           runStream();
-
-          _processor.stream.listen((onData) async {
-            String firstName = onData["firstName"];
-            String lastName = onData["lastName"];
-            //show scaffold here
-            _scaffoldKey.currentState.showSnackBar(SnackBar(
-                backgroundColor: Color.fromRGBO(46, 204, 113, 1),
-                content: Text("${firstName} ${lastName}",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontFamily: 'Lato', color: Colors.white, fontSize: 18)),
-                duration: Duration(milliseconds: 500)));
-          });
-        }).catchError((onError) {
-          //permission denied
-          if (onError.toString().contains("permission not granted")) {
-            setState(() {
-              _cameraPermission = false;
-            });
-          }
-        });
+      
+    }); 
       });
-    } else {
+    }
+    else {
       setState(() {
         _cameraPermission = false;
       });
@@ -237,9 +242,11 @@ class _ScannerComponentState extends State<ScannerComponent> {
                           });
                         },
                         child: Container(
-                          child: Text(Platform.isAndroid
-                              ? "You have denied camera permissions, please accept them by clicking on this text"
-                              : "You have denied camera permissions, please go to settings to activate them"),
+                          child: Center(
+                            child: Text(Platform.isAndroid
+                                ? "You have denied camera permissions, please accept them by clicking on this text"
+                                : "You have denied camera permissions, please go to settings to activate them"),
+                          ),
                         )),
               ),
             ),

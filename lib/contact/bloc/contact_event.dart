@@ -10,9 +10,9 @@ class SearchEvent extends ContactEvent{
   SearchEvent(this._query): super();
 }
 
-class ViewEvent extends ContactEvent{
-  final Map<String, String> _contactData;
-  ViewEvent(this._contactData) : super();
+class ViewerEvent extends ContactEvent{
+  final String name;
+  ViewerEvent(this.name) : super();
 }
 
 class HomeEvent extends ContactEvent{

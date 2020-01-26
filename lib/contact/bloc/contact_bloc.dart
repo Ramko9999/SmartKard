@@ -1,4 +1,7 @@
 import 'dart:async';
+import 'dart:convert';
+import 'package:minne_hack/utility/global.dart';
+
 import './bloc.dart';
 import 'package:bloc/bloc.dart';
 
@@ -16,6 +19,11 @@ class ContactBloc extends Bloc<ContactEvent, ContactState> {
     }
     else if(event is HomeEvent){
       yield HomeState();
+    }
+    else if(event is ViewerEvent){
+      yield LoadingState();
+      Map data = json.decode(await Global.contactFile.readAsString());
+      yield ViewerState(data[event.name]);
     }
   }
 }

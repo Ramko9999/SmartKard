@@ -38,6 +38,9 @@ class ContactPageComponent extends StatelessWidget{
           if(state is SearchState){
             return SearchComponent();
           }
+          else if(state is ViewerState){
+            
+          }
         },
       ),
     );

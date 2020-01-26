@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import "package:flutter/material.dart";
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:minne_hack/contact/bloc/bloc.dart';
@@ -17,24 +19,15 @@ class _SearchComponentState extends State<SearchComponent> {
   String _query = "";
 
   void initState() {
-    super.initState();
 
+
+    super.initState();
     Global.contactInfo = Trie();
-    Global.contactInfo.fillTrie([
-      "Ramki Pitchala",
-      "Aswi Rmako",
-      "Naruto Uzumaki",
-      "Nagato Uzumaki",
-      "Nimato Uzumaki",
-      "Nagito Uzumaki",
-      "Neiato Uzumaki",
-      "Naiato Uzumaki",
-      "Nagieto Uzumaki",
-      "Sasuke Uzumaki",
-      "Shinra Tensei",
-      "Shere Tensei",
-    ]);
-    
+    Map contactData = json.decode(Global.contactFile.readAsStringSync());
+    List<String> names = [];
+    contactData.forEach((k,v)=> names.add(k));
+    Global.contactInfo.fillTrie(names);
+
     _queryController = TextEditingController();
     _queryController.addListener((){
       setState(()=> _query = _queryController.text);
@@ -100,7 +93,8 @@ class SearchResults extends StatelessWidget{
   SearchResults(this._query);
 
   Widget build(BuildContext context){
-    
+    final contactBloc = BlocProvider.of<ContactBloc>(context);
+
     double sW = MediaQuery.of(context).size.width;
     double sH = MediaQuery.of(context).size.height;
 
@@ -117,6 +111,9 @@ class SearchResults extends StatelessWidget{
               color: ColorSchemeUI.glowingRed,
             ),
             child: ListTile(
+              onTap: (){
+                contactBloc.add(ViewerEvent(items[i]));
+              },
               subtitle: Container(child: Align(
                 alignment: Alignment(0.5, 0.5),
                 child: SocialMediaBar()

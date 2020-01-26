@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:minne_hack/data-transfer/connection_page.dart';
 import 'package:minne_hack/onboarding/functions.dart';
+import 'package:minne_hack/utility/transition.dart';
 
 class RegistrationForm extends StatefulWidget{
   @override
@@ -30,7 +31,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
 
   void _submit() async {
     LocalCache.initUser(_nameController.text, _emailController.text).then((_){
-      Navigator.of(context).push(MaterialPageRoute(builder: (context)=> ConnectionPage()));
+      Navigator.of(context).push(NoTransition(builder: (context)=> ConnectionPage()));
     });
   }
 
@@ -51,7 +52,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
               child: Align(
                 alignment: Alignment(-0.8, 1),
                 child: Text(
-                  "Intelli",
+                  "Smart",
                   style: TextStyle(
                     fontFamily: "Montserrat",
                     fontSize: 70,
@@ -65,7 +66,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
               child: Align(
                 alignment: Alignment(-0.8, -1),
                 child: Text(
-                  "TAG",
+                  "Kard",
                   style: TextStyle(
                     fontFamily: "Montserrat",
                     fontSize: 70,

@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import 'package:minne_hack/data-transfer/connection_page.dart';
 import 'package:minne_hack/onboarding/components/registration_comp.dart';
 import 'package:minne_hack/onboarding/functions.dart';
+import 'package:minne_hack/utility/transition.dart';
 
 class OnboardingPage extends StatefulWidget{
 
@@ -22,7 +23,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
       });
       if(b){
 
-        Navigator.of(context).push(MaterialPageRoute(builder: (context)=> ConnectionPage()));
+        Navigator.of(context).push(NoTransition(builder: (context)=> ConnectionPage()));
       }
     });
 

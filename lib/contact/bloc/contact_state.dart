@@ -5,7 +5,10 @@ abstract class ContactState {}
   
 class SearchState extends ContactState {}
 
-class ProfileViewState extends ContactState {}
+class ViewerState extends ContactState {
+  String data;
+  ViewerState(this.data): super();
+}
 
 class LoadingState extends ContactState {}
 
