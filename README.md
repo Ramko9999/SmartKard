@@ -1,5 +1,8 @@
 ## SmartKard
 
+![](images/preview.png)
+
+
 Rohan, Ramki and Rahul's project for the Minnehack IO Hackathon.
 
 ## Inspiration
